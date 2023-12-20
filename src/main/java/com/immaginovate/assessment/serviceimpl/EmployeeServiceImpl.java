@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.query.NativeQuery.ReturnableResultNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public List<EmployeeDTO> getTaxDeduction() {
 		EmployeeDTO employeeDto = null;
+		double totalSalary = 0;  
 		List<EmployeeDTO>employeeDtoList =  new ArrayList<EmployeeDTO>();
 		List<Employee>employeeList = employeeRepository.findAll();
 		for(Employee employee :employeeList)
@@ -58,7 +60,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 				
 				e.getMessage();
 			}
-			getTaxdesuction(employeeDto);  
+			totalSalary = getTaxdesuction(employeeDto);  
+			employeeDto = getTaxamount(totalSalary,employeeDto);
 			employeeDtoList.add(employeeDto);
 		}
 		return employeeDtoList;
@@ -68,7 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
 	
-	  private void getTaxdesuction(EmployeeDTO employeeDto) { 
+	  private double getTaxdesuction(EmployeeDTO employeeDto) { 
 		  
 		String df = new SimpleDateFormat("yyyy-mm-dd").format(employeeDto.getDoj());	
 		
@@ -87,7 +90,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	    	  double dojdate = (30-doj.getDayOfMonth())*perdaySal;
 	    	 totalSalary = dojdate+(12-(doj.getMonthValue()-1)+3)*employeeDto.getSalary();
 	      }
-	      getTaxamount(totalSalary,employeeDto);
+	     return totalSalary;
 	  }
 
 
@@ -100,7 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		 * 
 		 * 20% Tax for >1000000
 		 */
-	private void getTaxamount(double totalSalary, EmployeeDTO employeeDto) {
+	private EmployeeDTO getTaxamount(double totalSalary, EmployeeDTO employeeDto) {
 		double taxAmount = 0.0;
 		if(totalSalary<=250000)
 		{
@@ -120,6 +123,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		{
 			employeeDto.setTaxAmount(0.2*(totalSalary-1000000)+62500);
 		}
+		return employeeDto;
 		
 	}
 	 
