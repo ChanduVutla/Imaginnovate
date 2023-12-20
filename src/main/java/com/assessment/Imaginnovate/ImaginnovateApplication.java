@@ -1,15 +1,13 @@
-package com.immaginovate.assessment;
+package com.assessment.Imaginnovate;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AssessmentApplication {
+public class ImaginnovateApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AssessmentApplication.class, args);
-		
-		
+		SpringApplication.run(ImaginnovateApplication.class, args);
 	}
 
 }
